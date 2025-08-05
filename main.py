@@ -149,15 +149,23 @@ HTML_TEMPLATE = """
 
     footer {
       margin-top: auto;
-      padding: 1rem;
+      padding: 1.5rem;
       text-align: center;
-      font-size: 0.9rem;
-      color: #888;
     }
 
-    .bi {
-      margin-right: 8px;
-      vertical-align: middle;
+    .social-icons a {
+      margin: 0 10px;
+      display: inline-block;
+    }
+
+    .social-icons img {
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .social-icons img:hover {
+      transform: scale(1.1);
     }
 
     .error-msg {
@@ -219,12 +227,14 @@ HTML_TEMPLATE = """
     </video>
     <div class="video-title">{{ title }}</div>
     <div class="hashtags">{{ hashtags or "No hashtags found" }}</div>
-    <a href="/video/{{ filename }}" download>
-      <button style="margin-top: 1rem;">
-        <i class="bi bi-cloud-arrow-down-fill"></i> Download Video
-      </button>
-    </a>
-  </div>
+    
+    <div style="display: flex; justify-content: center; margin-top: 1rem;">
+      <a href="/video/{{ filename }}" download>
+        <button>
+          <i class="bi bi-cloud-arrow-down-fill"></i> Download Video
+        </button>
+      </a>
+    </div>
   {% endif %}
 
   <div class="ads-container">
@@ -239,7 +249,15 @@ HTML_TEMPLATE = """
   </div>
 
   <footer>
-    &copy; 2025 Smart Downloader. Built with ❤️
+  &copy; 2025 Smart Downloader.
+    <div class="social-icons">
+      <a href="https://t.me/Alcboss112" target="_blank" title="Telegram">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" />
+      </a>
+      <a href="https://www.facebook.com/Alcboss112" target="_blank" title="Facebook">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" alt="Facebook" />
+      </a>
+    </div>
   </footer>
 
   <script>
@@ -268,7 +286,7 @@ def index():
             return render_template_string(HTML_TEMPLATE, error=error)
 
         try:
-            # TikTok using TikWM API
+            # TikTok via tikwm API
             if "tiktok.com" in url:
                 api = f"https://www.tikwm.com/api/?url={url}"
                 resp = requests.get(api).json()
@@ -278,16 +296,13 @@ def index():
                     hashtags = " ".join(f"#{tag}" for tag in resp["data"].get("tags", []))
                 else:
                     raise Exception("TikTok API error or video not found.")
-
             else:
-                # Other sites via yt-dlp
                 ydl_opts = {
                     "format": "mp4",
                     "outtmpl": "downloads/%(id)s.%(ext)s",
                     "quiet": True,
                     "noplaylist": True,
                 }
-
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(url, download=False)
                     title = info.get("title", "No Title")
