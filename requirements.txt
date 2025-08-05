@@ -1,3 +1,6 @@
-flask
+Flask
 requests
+beautifulsoup4
+selenium
+chromedriver-autoinstaller
 yt-dlp
