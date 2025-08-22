@@ -4,3 +4,7 @@ beautifulsoup4
 selenium
 chromedriver-autoinstaller
 yt-dlp
+pytube
+instaloader
+tiktok-dl
+snscrape
